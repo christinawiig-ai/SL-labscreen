@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Labskjermer · Studio</title><link rel="stylesheet" href="css/studio.css"></head>
+<body>
+<header class="topbar"><a class="brand" href="studio.html"><img src="assets/logos/SL_signature_black.svg" alt="Startuplab"><span>Labskjermer</span></a><div class="top-actions"><span class="pilot-label">LOKAL PILOT</span><a class="button" href="player.html" target="_blank" rel="noopener">Åpne testskjerm</a></div></header>
+<div class="pilot-note">Du tester med demoinnhold. Slack, Nissiks innlogging og TV-systemet er ikke koblet til. <a href="design-review.html">Se designutkastene →</a></div>
+<main class="workspace">
+<aside class="library"><div class="section-label">INNHOLDSBIBLIOTEK</div><h1>Fra idé<br>til skjerm.</h1><p class="muted">Velg et utkast. Gjør det relevant.</p><div id="items" class="items"></div><div class="library-actions"><button id="duplicate" class="button full" aria-describedby="duplicate-help">Ny slide fra denne malen</button><p id="duplicate-help" class="field-help">Lager et nytt utkast med samme oppsett og innhold. Deretter kan du endre tekst og bilde.</p><details class="library-storage"><summary>Lagring</summary><p class="field-help">Utkastene lagres i denne nettleseren. Last ned alle utkastene i en fil hvis du vil ta vare på en sikkerhetskopi. For bilder til skjermen bruker du PNG-eksport.</p><button id="backup" class="text-button">Last ned alle utkast (JSON)</button></details></div></aside>
+<section class="stage" aria-label="Forhåndsvisning og godkjenning">
+<div class="stage-heading"><div><span class="section-label" id="template-label"></span><h2 id="item-title"></h2></div><span id="status" class="status"></span></div>
+<div class="preview-wrap"><canvas id="preview" width="1920" height="1080" role="img" aria-label="Forhåndsvisning av skjerminnhold"></canvas><div id="render-error" class="render-error" hidden></div></div>
+<div class="preview-meta"><span>1920 × 1080 · 16:9 · English</span><button id="png" class="text-button">Last ned PNG</button></div>
+<div class="workflow"><div><span class="section-label">PUBLISERINGSFLYT</span><h3 id="workflow-title">Gjør utkastet klart.</h3><p id="workflow-description" class="muted"></p></div><div class="workflow-actions"><button id="review" class="button primary">Klar til godkjenning</button><button id="approve" class="button primary" hidden>Test Nissiks godkjenning</button><button id="withdraw" class="text-button" hidden>Trekk tilbake testpublisering</button></div></div>
+<details class="handover"><summary>Rediger med en prompt i Cowork</summary><p>Beskriv endringen. Last ned forespørselen og legg den i Cowork. Lim inn JSON-svaret under for å få et nytt utkast. Ingen AI er koblet direkte til denne piloten.</p><label for="prompt">Hva vil du endre?</label><textarea id="prompt" rows="3" placeholder="Gjør teksten kortere og mer inviterende. Behold tidspunkt og sted."></textarea><button id="request-export" class="button">Last ned forespørsel til Cowork</button><label for="patch">Svar fra Cowork (JSON)</label><textarea id="patch" rows="4" spellcheck="false" placeholder='{"itemId":"…","baseRevision":1,"patch":{"title":"…"}}'></textarea><button id="patch-apply" class="button">Bruk svaret som nytt utkast</button></details>
+<details><summary>Versjonshistorikk</summary><ol id="history" class="history"></ol></details>
+<div id="feedback" role="status" aria-live="polite"></div>
+</section>
+<aside class="editor"><div class="section-label">REDIGER UTKAST</div><form id="editor-form">
+<label for="type">Mal</label><select id="type" name="type"></select>
+<label for="eyebrow">Liten overskrift</label><input id="eyebrow" name="eyebrow" maxlength="60">
+<label for="title">Hovedbudskap <span>maks. 90 tegn</span></label><textarea id="title" name="title" maxlength="90" rows="3" required></textarea>
+<label for="body">Kort forklaring <span>maks. 220 tegn</span></label><textarea id="body" name="body" maxlength="220" rows="4"></textarea>
+<label for="detail">Tidspunkt eller viktig detalj</label><input id="detail" name="detail" maxlength="80">
+<label for="location">Sted / målgruppe</label><input id="location" name="location" maxlength="70">
+<label for="cta">Hva skal mottakeren gjøre?</label><input id="cta" name="cta" maxlength="60">
+<label for="url" id="url-help">Lenke · valgfritt</label><input id="url" name="url" type="url" maxlength="300" placeholder="https://…">
+<div id="timeline-fields" hidden><h3>Seks milepæler</h3><div id="milestone-fields"></div></div>
+<div id="expertise-fields" hidden><label for="expertise">Kompetanseområder · opptil seks linjer</label><textarea id="expertise" name="expertise" maxlength="220" rows="6"></textarea></div>
+<div id="agenda-fields" hidden><label for="agenda">Kort agenda</label><textarea id="agenda" name="agenda" maxlength="120" rows="2"></textarea></div>
+  <div id="network-fields" hidden><h3>Åtte EIR-profiler</h3><div id="profile-fields"></div></div>
+  <div id="cards-fields" hidden><h3>Tre innholdspunkter</h3><div id="card-fields"></div></div>
+<div id="image-fields"><label for="library-image">Velg fra bildebiblioteket</label><select id="library-image"><option value="">Behold nåværende bilde</option></select><label for="image">Last opp bilde / ferdig plakat</label><input id="image" type="file" accept="image/png,image/jpeg,image/webp"><p class="field-help" id="image-help">PNG, JPG eller WebP. Maks. 8 MB.</p><button type="button" id="remove-image" class="text-button">Fjern bilde</button></div>
+<hr><div class="section-label">VISNINGSPERIODE</div><p class="field-help" id="timezone"></p>
+<label for="screen">Testskjerm</label><select id="screen" name="screen"></select>
+<label for="startsAt">Vis fra</label><input id="startsAt" name="startsAt" type="datetime-local" required>
+<label for="endsAt">Fjern fra skjermen</label><input id="endsAt" name="endsAt" type="datetime-local" required>
+<button type="submit" id="save" class="button primary full">Lagre ny versjon</button><button type="button" id="discard" class="text-button">Forkast ulagrede endringer</button><p id="dirty" class="field-help" aria-live="polite">Alle endringer er lagret lokalt.</p>
+</form></aside>
+</main><script type="module" src="js/pilot/studio.mjs?v=20260909-feedback4"></script></body></html>

@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><base href="../"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lab screen template verification</title><style>body{background:#e8e4e1;color:#1d2526;font:18px Arial,sans-serif;margin:24px}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:24px}article{min-width:0}canvas{width:100%;height:auto;display:block}h2{font-size:18px}.error{color:#a00000}@media(max-width:500px){main{display:block}article{margin-bottom:24px}}</style></head><body><h1>Every template family</h1><p id="result" role="status">Rendering source examples…</p><main></main><script type="module">
+import {samples,designSamples,TYPES} from './js/pilot/samples.mjs?v=20260909-review-r3';
+import {renderSlide} from './js/pilot/render.mjs?v=20260909-review-r3';
+const examples=[...designSamples().map(x=>x.content),...samples()];let passed=0;const failures=[];
+for(const [type,label] of Object.entries(TYPES)){
+ const article=document.createElement('article'),heading=document.createElement('h2'),canvas=document.createElement('canvas');heading.textContent=label;article.append(heading,canvas);document.querySelector('main').append(article);
+ try{const content=examples.find(x=>x.type===type);if(!content)throw new Error('Missing example');await renderSlide(canvas,content);passed++;}
+ catch(error){const message=document.createElement('p');message.className='error';message.textContent=error.message;article.append(message);failures.push(type);}
+ document.querySelector('#result').textContent=`${passed} / ${Object.keys(TYPES).length} templates rendered. ${failures.length} failures.`;
+}
+</script></body></html>

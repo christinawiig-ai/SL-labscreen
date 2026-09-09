@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {samples} from '../js/pilot/samples.mjs';
+import {createItem,requestReview,approveItem} from '../js/pilot/model.mjs';
+import {makeRequest,applyResponse} from '../js/pilot/handover.mjs';
+import {decodeStore,encodeStore} from '../js/pilot/storage.mjs';
+const make=()=>createItem(samples()[0],{id:'event-1'});
+test('Cowork request includes precise identity and excludes image bytes',()=>{const item=make();const request=makeRequest(item,'Shorter title');assert.match(request,/Shorter title/);assert.match(request,/"baseRevision": 1/);assert.throws(()=>makeRequest(item,' '));});
+test('reply changes only current draft, never the approved snapshot',()=>{const item=approveItem(requestReview(make()),1);const next=applyResponse(item,JSON.stringify({itemId:item.id,baseRevision:1,patch:{title:'A useful conversation.'}}));assert.equal(next.revision,2);assert.equal(next.approved.content.title,item.content.title);assert.equal(next.reviewRevision,null);});
+test('wrong ID, stale revision and imported approval are rejected',()=>{const item=make();for(const reply of [{itemId:'other',baseRevision:1,patch:{title:'x'}},{itemId:item.id,baseRevision:0,patch:{title:'x'}},{itemId:item.id,baseRevision:1,patch:{approved:true}},{itemId:item.id,baseRevision:1,patch:{title:'x'},approved:true}])assert.throws(()=>applyResponse(item,JSON.stringify(reply)));});
+test('all samples validate and local data roundtrips',()=>{const items=samples().map((c,i)=>createItem(c,{id:String(i)}));assert.deepEqual(decodeStore(encodeStore(items)),items);assert.throws(()=>decodeStore('{broken'));assert.throws(()=>decodeStore(encodeStore([items[0],items[0]])));});
